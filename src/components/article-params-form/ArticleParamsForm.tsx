@@ -13,17 +13,35 @@ import {
   defaultArticleState,
   fontColors,
   fontFamilyOptions,
-  fontSizeOptions,} from 'src/constants/articleProps';
+  fontSizeOptions,
+} from 'src/constants/articleProps';
+
+import type { ArticleStateType } from 'src/constants/articleProps';
 
 import styles from './ArticleParamsForm.module.scss';
 
-export const ArticleParamsForm = (): React.JSX.Element => {
+type ArticleParamsFormProps = {
+  setArticleState: (state: ArticleStateType) => void
+}
+
+export const ArticleParamsForm = ({ setArticleState }: ArticleParamsFormProps): React.JSX.Element => {
   const [isOpen, setIsOpen] = useState(false)
   const [formState, setFormState] = useState(defaultArticleState)
   const rootRef = useRef<HTMLDivElement>(null)
 
   const handleArrowClick = (): void => {
     setIsOpen(!isOpen);
+  }
+
+  const handleSubmit = (evt: React.FormEvent): void => {
+    evt.preventDefault();
+    setArticleState(formState)
+  }
+
+  const handleReset = (evt: React.FormEvent): void => {
+    evt.preventDefault();
+    setFormState(defaultArticleState)
+    setArticleState(defaultArticleState)
   }
 
   useOutsideClickClose({
@@ -36,7 +54,7 @@ export const ArticleParamsForm = (): React.JSX.Element => {
     <>
       <ArrowButton isOpen={isOpen} onClick={handleArrowClick} />
       <aside ref={rootRef} className={clsx(styles.container, isOpen && styles.container_open)}>
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={handleSubmit} onReset={handleReset}>
           <Text size={31} weight={800} uppercase>
             Задайте параметры
           </Text>
